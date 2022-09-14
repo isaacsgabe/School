@@ -70,7 +70,7 @@ a) with hdistance1 unweighted
 4x4
     that amount pushed on the frontier is 14362.15
     that amount popped off the frontier is 6790.93
-    the total depth is: 16.6
+    the total depth is: 16.9
 
 ####################
 2*hdistance2.... weighted
