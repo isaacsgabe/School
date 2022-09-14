@@ -14,7 +14,7 @@ def create(n):
     m="<>v^"                # m is "<>v^" - for every possible move (left, right, down, up)
     for i in range(n*n*n):  # makes n^3 random moves
         if_legal(s,m[random.randrange(4)])
-    return [s,"",0]           # at the beginning "" is an empty path, later on path
+    return [s,""]           # at the beginning "" is an empty path, later on path
                             # contains the path that leads from the initial state to the state
 
 def get_next(x):          # returns a list of the children states of x
@@ -28,8 +28,6 @@ def get_next(x):          # returns a list of the children states of x
             ns.append([s,x[1]+i])   # appends the new state to ns
     return ns
 
-def changeDepth(x):
-    x[2] = x[2] + 1
 
 def path_len(x):
     return len(x[1])

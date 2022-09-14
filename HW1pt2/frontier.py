@@ -18,6 +18,7 @@ def is_empty(f):
 def insert(h, s):
     #inserts state s to the frontier
     f=h[0]
+    h[2] += 1
     f.append(s)     # inserts the new state as the last item
     i=len(f)-1      # i gets its value
     # move the item with smallest value to the root
@@ -32,6 +33,7 @@ def remove(h):
     if is_empty(h):
         return 0
     f=h[0]
+    h[3] += 1
     s=f[0]
     f[0]=f[len(f)-1]    # the last leaf becomes the root
     del f[-1]       # delete the last leaf
@@ -39,7 +41,7 @@ def remove(h):
     return s
 
 def val(s):  # returns f(x) which is path len + heuristic distance from target
-    return state.hdistance2(s)+state.path_len(s)
+    return 2*state.hdistance1(s)+state.path_len(s)
 '''
 for greedy best first search val returns hdistance
 for uniform cost val returns path len
