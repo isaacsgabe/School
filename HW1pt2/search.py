@@ -16,7 +16,6 @@ def search(n):
     f=frontier.create(s)
     while not frontier.is_empty(f):
         s=frontier.remove(f)
-        f[3] = f[3]+1
         if state.is_target(s):
             push += f[2]
             pop += f[3]
@@ -25,7 +24,6 @@ def search(n):
         ns=state.get_next(s)
         for i in ns:
             frontier.insert(f,i)
-            f[2] = f[2]+1
     return 0
 
 # for i in range(10000):
@@ -52,36 +50,35 @@ part 2
 a) with hdistance1 unweighted
 
 4x4 with hdistance1 regular
-    that amount pushed on the frontier is 62169.06
-    that amount popped off the frontier is 29742.61
-    the total depth is: 16.27
+    that amount pushed on the frontier is 44314.13
+        that amount popped off the frontier is 21062.86
+        the total depth is: 16.73
 
 
 ############################################
-a) with hdistance2 unweighted
 
 
 4x4 with hdistance2 regular
-    that amount pushed on the frontier is 4113.56
-    that amount popped off the frontier is 2048.22
-    the total depth is: 10.1
+    that amount pushed on the frontier is 2408.14
+    that amount popped off the frontier is 1199.71
+    the total depth is: 16.48
 
 ####################
 2*hdistance1.... weighted
 
 
 4x4
-    that amount pushed on the frontier is 28048.16
-    that amount popped off the frontier is 13319.44
-    the total depth is: 10.7
+    that amount pushed on the frontier is 14362.15
+    that amount popped off the frontier is 6790.93
+    the total depth is: 16.6
 
 ####################
 2*hdistance2.... weighted
 
 4x4
-    that amount pushed on the frontier is 3315.18
-    that amount popped off the frontier is 1650.37
-    the total depth is: 11.38
+    that amount pushed on the frontier is 1717.59
+    that amount popped off the frontier is 855.2
+    the total depth is: 17.78
 
 
 
