@@ -1,0 +1,192 @@
+from random import choice
+
+class ConstraindClass:
+    def __init__(self, holders , currents, constraints):
+        self.holders = holders
+        self.currents = currents
+        self.constraints = constraints
+
+class createBoard:
+    def __init__(self, n):
+        self._n = n
+        self._queen_rows = {i: set() for i in range(1, self._n+1)}
+        self._upDiag = {i: set() for i in range(1, 2 * self._n)}
+        self._queen_negdiag = {i: set() for i in range(1, 2 * self._n)}
+
+    def placeQns(self, x, y, constraints):
+        combined = self._queen_rows[y] | self._upDiag[y+(x-1)] | self._queen_negdiag[y + (self._n - x)]
+        for i in combined:
+            constraints[i] += 1
+        self._queen_rows[y].add(x)
+        self._upDiag[y+(x-1)].add(x)
+        self._queen_negdiag[y+(self._n - x)].add(x)
+        constraints[x] = len(combined)
+        return
+
+    def dlt_queens(self, x, y, constraints):
+        combined = self._queen_rows[y] | self._upDiag[y+(x-1)] | self._queen_negdiag[y + (self._n - x)]
+        for i in combined:
+            constraints[i] -= 1
+        self._queen_rows[y].remove(x)
+        self._upDiag[y+(x-1)].remove(x)
+        self._queen_negdiag[y+(self._n - x)].remove(x)
+        constraints[x] = 0
+        return
+
+    def getAmtOfConf(self, x, y):
+        combined = self._queen_rows[y] | self._upDiag[y+(x-1)] | self._queen_negdiag[y + (self._n - x)]
+        return len(combined)
+
+
+
+countCST = 0
+# FUNCTIONS #
+def min_conflicts(csp, n, board, maxOut=100):
+    global countCST
+    # Tabu Search list and variable to avoid repeating moves
+    pastcpy = {}
+    prev_q = None
+
+    # sets the size of the tabu list
+    x = 50 if n >= 100 else (n//2)
+    countCST += n-1
+    for i in range(1, maxOut+1):
+        # get the list of conflcited queens from the csp constraints
+        conflicted = [i for i, j in csp.constraints.items() if j != 0]
+        #setting the countCST for each queen that is added
+
+        # check if we solved the problem
+        if conflicted == []:
+            countCST += i
+            print('Steps: {}'.format(i))
+            return csp
+        # remove the past queen from the search space and get a random queen from the conflicted list and remove it from the board
+        # also, make sure we don't move the queen back and forth BIG BUg, finally get the queen with the fewst conflict and put the queen down again
+        if prev_q is not None and prev_q in conflicted:
+            conflicted.remove(prev_q)
+        var = choice(conflicted)
+        prev_q = var
+        board.dlt_queens(var, csp.currents[var], csp.constraints)
+        if var in pastcpy:
+            if csp.currents[var] not in pastcpy[var]:
+                pastcpy[var].append(csp.currents[var])
+        else:
+            pastcpy[var] = [csp.currents[var]]
+        v = conflicts(var, csp.currents[var], n, csp, pastcpy[var], board)
+        if len(pastcpy[var]) >= x: pastcpy[var].pop(0)
+        csp.currents[var] = v
+        board.placeQns(var, v, csp.constraints)
+        print("pause")
+        b = create_board(n)
+        for k, v in csp.currents.items():
+            b[v - 1][k - 1] = '♛'
+        print_board(b)
+        print("next")
+    countCST = maxOut
+    return False
+
+
+def fewestConflicts(x, n, possible, board):
+
+    # the list of y vs that have the least conflicts
+    conflict_list, min_count = [possible[0]], board.getAmtOfConf(x, possible[0])
+
+    # for the rest of the column find the positions with the least conflicts
+    for i in possible[1:]:
+        count = board.getAmtOfConf(x, i)
+        # update the min_count and list
+        if min_count > count:
+            min_count = count
+            conflict_list = [i]
+        elif min_count == count:
+            conflict_list.append(i)
+
+    return choice(conflict_list)
+
+
+def conflicts(var, v, n, csp, not_possible, board):
+    x, y = var, v
+    conflict_list, min_count = [], None
+
+    # check the column for the position with the least conflicts
+    for i in range(1, n+1):
+        # skip the position we just came from
+        if i == y: continue
+        count = board.getAmtOfConf(x, i)
+        if min_count is not None and min_count > count:
+            min_count = count
+            conflict_list = [i]
+        elif min_count is not None and min_count == count:
+            conflict_list.append(i)
+        elif min_count is None:
+            min_count = count
+            conflict_list = [i]
+
+    rflist = list(set(conflict_list) - set(not_possible))
+
+    # if the conflict is has positions that the queen has not been to yet
+    if rflist != []:
+        return choice(rflist)
+
+    # if there were no positions available for the queen choose a random one
+    return choice(conflict_list)
+
+
+# functions to create and print the board
+def create_board(n):
+    return [[' .' for i in range(n)] for j in range(n)]
+
+
+def print_board(board):
+    for x in board:
+        for y in x:
+            print(y, end=' ')
+        print()
+    return
+
+def runCST():
+    n=20
+    board = createBoard(n)
+    holders = [i for i in range(1, n+1)]
+    cpy = holders.copy()
+    constraints = {i: 0 for i in holders}
+# place queens on the board randomly
+    y = choice(cpy)
+    currents = {1: y}
+    cpy.remove(y)
+# place queen, update containts and add the rest
+    board.placeQns(1, y, constraints)
+    for i in range(2, n+1):
+        y = fewestConflicts(i, n, cpy, board)
+        currents[i] = y
+        board.placeQns(i, y, constraints)
+        cpy.remove(y)
+    csp = ConstraindClass(holders, currents, constraints)
+# print staring board
+    if (n <= 15 or board):
+        print()
+        print('firstBoard')
+        b = create_board(n)
+        for k, v in csp.currents.items():
+            if constraints[k] > 0:
+                b[v-1][k -1] = '♛'
+            else:
+                b[v - 1][k - 1] = '♛'
+        print_board(b)
+        print()
+    is_solved = min_conflicts(csp, n, board, maxOut= n*10)
+    if is_solved:
+        if (n <= 15 or board):
+            print()
+            print('Solved Board')
+            b = create_board(n)
+            for k, v in is_solved.currents.items():
+                b[v - 1][k - 1] = '♛'
+            print(str(countCST))
+            print_board(b)
+    else:
+        # we maxed out so delete the board and try again
+        print("maxed out " + str(countCST))
+        runCST()
+runCST()
+print(str(countCST))

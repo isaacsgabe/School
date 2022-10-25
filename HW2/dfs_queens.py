@@ -132,15 +132,6 @@ def next_row_is_safe(column):
             return False
     return True
 
-#size = int(input('Enter n: '))
-# num_iterations=0
-# number_moves = 0
-# #for i in range(0, 100):
-# #    columns = [] #columns is the locations for each of the queens
-# num_iterations, number_moves=solve_queen(size)
-# print(num_iterations)
-# print(number_moves)
-# print(columns)
 
 """Now what?  Can you implement the British Museum Algorithm?  How many iterations did it take to solve the 4 queens problem?  How many did it take to solve the 8 queens (if at all)?"""
 
@@ -466,7 +457,7 @@ CSP/Forward Checking
     minimum moves:8
     maximum moves: 116
     average moves: 30.34
-    minimum iterations:30.34
+    minimum iterations: 30.34
     maximum iterations: 30.34
     average iterations: 30.34
 
