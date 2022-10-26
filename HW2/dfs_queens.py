@@ -385,6 +385,9 @@ def main():
         #     MinIter = totalIter
         # counter += totalMoves
         # averageIter += totalIter
+        # MinIter = counter/100
+        # maxIter = counter/100
+        # averageIter = counter
 
 
         #hillclimbing
@@ -418,6 +421,8 @@ def main():
         MinIter = counter/100
         maxIter = counter/100
         averageIter = counter
+    
+    display()
     print('minimum moves:' +  str(minimum))
     print("maximum moves: " + str(maximum))
     print('average moves: ' + str(counter/100))
